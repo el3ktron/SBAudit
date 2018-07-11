@@ -53,12 +53,12 @@ Ganache Electron App customizing:
 6. Click 'Restart' button
 
 To start test you need to change the accounts private keys in ```test/Token.test.js::29:1``` and ```test/Token.test.js::30:1``` to yours. If you're using ganache-cli all that you need:
- - npm run rpc
+ - ```npm run rpc```
  - copy (0) and (3) account private keys for 'alicePrivateKey' and 'damiensPrivateKey' relatively
- - npm run test
+ - ```npm run test```
  
  
-To start test with use of Ganache Electron App you need to copy private key of 1 and 4 account from default app page listing, changing the values of the same variables.
+To start test with use of Ganache Electron App you need to copy private key of 1 and 4 account from default app page listing, changing the values of the same variables and start ```npm run test``` command.
 
 
 
