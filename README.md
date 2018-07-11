@@ -42,7 +42,30 @@ Source: ```https://github.com/trufflesuite/ganache/releases```
 Ganache Electron App customizing: 
 1. Open settings
 2. Select 'Server' button
-3. Change your values for the following:
+3. Do the following changes:
+  - hostname ```127.0.0.1 - lo0```
+  - port number ```7545```
+  - network id ```5777```
+4. Select 'Accounts & Keys' button
+5. Do the following changes:
+  - account default balance ```1000000000000000```
+  - total accounts to generate ```10```
+6. Click 'Restart' button
+
+To start test you need to change the accounts private keys in ```test/Token.test.js::29:1``` and ```test/Token.test.js::30:1``` to yours. If you're using ganache-cli all that you need:
+ - npm run rpc
+ - copy (0) and (3) account private keys for 'alicePrivateKey' and 'damiensPrivateKey' relatively
+ - npm run test
+ 
+ 
+To start test with use of Ganache Electron App you need to copy private key of 1 and 4 account from default app page listing, changing the values of the same variables.
+
+
+
+
+
+
+
 
 
 
