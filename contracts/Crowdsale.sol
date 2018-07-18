@@ -1,8 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./SpitballToken.sol";
+import "./Whitelist.sol";
 
-contract Crowdsale is Ownable {
+contract Crowdsale is Whitelist {
 
   mapping(address => uint256) public balanceOf;
 
@@ -12,7 +13,6 @@ contract Crowdsale is Ownable {
   uint256 public deadline;
   uint256 public price;
   SpitballToken public tokenReward;
-  mapping(address => bool) whitelist;
 
   bool public fundingGoalReached = false;
   bool public crowdsaleClosed = false;
@@ -21,46 +21,38 @@ contract Crowdsale is Ownable {
   event FundTransfer(address backer, uint256 amount, bool isContribution);
 
 
- 
-
   /**
    * Constructor function
    *
    * Setup the owner
    */
-    constructor (
-      address ifSuccessfulSendTo,
-      uint256 fundingGoalInEthers,
-      uint256 durationInMinutes,
-      uint256 etherCostOfEachToken,
-      address addressOfTokenUsedAsReward
-    ) 
-      public 
-    {
-        beneficiary = ifSuccessfulSendTo;
-        fundingGoal = SafeMath.mul(fundingGoalInEthers, 1 ether);
-        deadline = SafeMath.add(now, SafeMath.mul(durationInMinutes, 1 minutes));
-        price = SafeMath.mul(etherCostOfEachToken, 1 wei);
-        tokenReward = SpitballToken(addressOfTokenUsedAsReward);
-    }
-
-    /**
-      * approve user to crowdsale whitlist
-      */  
-    function approve(address addr) public {
-        
-        require(msg.sender == owner);
-
-        whitelist[addr] = true;
-    }
+  constructor 
+  (
+    address ifSuccessfulSendTo,
+    uint256 fundingGoalInEthers,
+    uint256 durationInMinutes,
+    uint256 etherCostOfEachToken,
+    address addressOfTokenUsedAsReward
+  ) 
+    public 
+  {
+    beneficiary = ifSuccessfulSendTo;
+    fundingGoal = SafeMath.mul(fundingGoalInEthers, 1 ether);
+    deadline = SafeMath.add(now, SafeMath.mul(durationInMinutes, 1 minutes));
+    price = SafeMath.mul(etherCostOfEachToken, 1 wei);
+    tokenReward = SpitballToken(addressOfTokenUsedAsReward);
+  }
 
 
   /*
    *  Function implementing token sale contribution feature
    */
-  function buyTokens () public payable {
+  function buyTokens () 
+    public 
+    payable
+    onlyIfWhitelisted(msg.sender)
+  {
     require(!crowdsaleClosed);
-    require(whitelist[msg.sender]);
     uint256 amount = msg.value;
     balanceOf[msg.sender] = SafeMath.add(balanceOf[msg.sender], amount);
     amountRaised = SafeMath.add(amountRaised, amount);
@@ -99,17 +91,17 @@ contract Crowdsale is Ownable {
   function safeWithdrawal() 
     public 
     afterDeadline
- 
+    onlyIfWhitelisted(msg.sender)
   {
     if (!fundingGoalReached) {
       uint256 amount = balanceOf[msg.sender];
       balanceOf[msg.sender] = 0;
       if (amount > 0) {
-          if (msg.sender.send(amount)) {
-            emit FundTransfer(msg.sender, amount, false);
-          } else {
-            balanceOf[msg.sender] = amount;
-          }
+        if (msg.sender.send(amount)) {
+          emit FundTransfer(msg.sender, amount, false);
+        } else {
+          balanceOf[msg.sender] = amount;
+        }
       }
     }
 

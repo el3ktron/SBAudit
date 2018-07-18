@@ -26,8 +26,8 @@ const hashedTightPacked = (args) => {
   return ethUtil.sha3(Buffer.concat(args));
 };
 
-const alicePrivateKey = Buffer.from('2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501200', 'hex');
-const damiensPrivateKey = Buffer.from('2bdd21761a483f71054e14f5b827213567971c676928d9a1808cbfa4b7501203', 'hex');
+const alicePrivateKey = Buffer.from('ee700fb505297b21b088418e51c70a26e2a872528ecff3d2ccdf92bf40d63021', 'hex');
+const damiensPrivateKey = Buffer.from('3c1c1471e2f4d6343bae37a31d388c33579aa6cfb06c98f9742043c5bad360a2', 'hex');
 
 contract('SpitballToken', ([alice, bob, charlie, damiens, owner]) => {
   let database, token;
@@ -56,17 +56,17 @@ contract('SpitballToken', ([alice, bob, charlie, damiens, owner]) => {
     })
 
     it('should have name', async () => {
-      const _name = await database.name();
+      const _name = await token.name();
       _name.should.be.equal(name);
     });
 
     it('should have symbol', async () => {
-      const _symbol = await database.symbol();
+      const _symbol = await token.symbol();
       _symbol.should.be.equal(symbol);
     });
 
     it('should have decimals', async () => {
-      const _decimals = (await database.decimals()).toNumber();
+      const _decimals = (await token.decimals()).toNumber();
       _decimals.should.be.equal(decimals);
     });
 
